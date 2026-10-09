@@ -79,7 +79,7 @@ jobs:
           cp adapter-yubikey-piv/target/*.jar dist/
           cp README.md SECURITY.md dist/
 
-          cat > dist/BUILD-METADATA.txt <<'EOF'
+          cat > dist/BUILD-METADATA.txt <<EOF
           Project: Hardware Signing Bridge
           Java: 21
           Build type: portable Java JARs
