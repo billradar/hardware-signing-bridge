@@ -1,7 +1,10 @@
 package io.github.billradar.hsb.api;
+import java.io.IOException;
+import java.io.NotSerializableException;
+import java.io.ObjectOutputStream;
 import java.security.PrivateKey;
 import java.util.Objects;
-/** Opaque reference to a hardware-held private key. Private key bytes are never exposed. */
+/** Opaque reference to a hardware-held private key. Private key bytes are never exposed or serialized. */
 public final class HardwarePrivateKey implements PrivateKey {
  private static final long serialVersionUID = 1L;
  private final SigningKeyReference reference;
@@ -14,4 +17,7 @@ public final class HardwarePrivateKey implements PrivateKey {
  @Override public String getAlgorithm() { return "EC"; }
  @Override public String getFormat() { return null; }
  @Override public byte[] getEncoded() { return null; }
+ private void writeObject(ObjectOutputStream out) throws IOException {
+  throw new NotSerializableException("Hardware private-key references must not be serialized");
+ }
 }
