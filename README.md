@@ -2,35 +2,27 @@
 
 A hardware-agnostic Java/JCA signing bridge with an initial YubiKey PIV / PKCS#11 integration target.
 
-> **Status:** Phase 1 — core library foundation. Not production-ready; no real hardware signing has been validated by this repository yet.
+> **Status:** Phase 1 implementation in draft review. The JDK-based PKCS#11 adapter is experimental and has not been validated against physical hardware.
 
-## Scope
+## Modules
 
-- Reusable Java API and JCA integration, independent of RustDesk and APK packaging.
-- Hardware-backed, non-exportable private-key references.
-- Explicit signing identity and algorithm selection; fail closed on ambiguity or errors.
-- Pure-software tests with mock signers.
-- YubiKey PIV support through a configurable PKCS#11 module is the first hardware adapter target.
-
-## Out of scope
-
-- CA creation, certificate issuance, or certificate lifecycle management.
-- RustDesk release workflows, APK policy, production certificate fingerprints, and production signing secrets.
-- Automatic PIN persistence, silent fallback, or exporting private key material.
-- Native-image packaging and production CLI in Phase 1.
+- **bridge-api** — backend contract, signing-session lifecycle, opaque hardware private-key reference, certificate fingerprint binding, and PIN-buffer helper.
+- **bridge-jca** — JCA Provider exposing SHA256withECDSA and SHA384withECDSA through an explicitly injected backend.
+- **adapter-yubikey-piv** — experimental adapter using JDK SunPKCS11 with a caller-configured PKCS#11 module.
 
 ## Build
 
 Requires JDK 21 and Maven 3.9+.
 
 ```sh
-mvn -B verify
+mvn --batch-mode --no-transfer-progress verify
 ```
 
-Phase 1 currently establishes the API/JCA library and mock-backed test baseline. Hardware tests are opt-in and must never be required by ordinary CI.
+## Scope boundaries
 
-## Security posture
+- No CA creation, certificate issuance, or certificate lifecycle management.
+- No RustDesk release workflows, APK policy, production certificate fingerprints, or production signing secrets.
+- No automatic PIN persistence, silent fallback, or private-key export.
+- No CLI or native-image packaging in Phase 1.
 
-Treat this project as a security-sensitive library. Do not commit PINs, private keys, token dumps, production identity values, or local PKCS#11 configuration. Real-hardware validation is separate from mock tests and requires an explicitly authorized test environment.
-
-See [SECURITY.md](SECURITY.md), [docs/architecture.md](docs/architecture.md), and [docs/threat-model.md](docs/threat-model.md).
+See SECURITY.md, docs/architecture.md, docs/threat-model.md, and docs/yubikey-piv.md.
