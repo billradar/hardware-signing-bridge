@@ -42,6 +42,9 @@ public final class HardwareEcdsaSignatureSpi extends SignatureSpi {
   catch (SigningException e) { throw new SignatureException("Hardware signing failed", e); }
   finally { closeSession(); initialized = false; }
  }
+ @Override protected boolean engineVerify(byte[] signature) throws SignatureException {
+  throw new SignatureException("This provider supports hardware signing only");
+ }
  @Override protected void engineSetParameter(AlgorithmParameterSpec params) throws InvalidAlgorithmParameterException { throw new InvalidAlgorithmParameterException("Signature parameters are not supported"); }
  @Override @Deprecated protected void engineSetParameter(String name, Object value) { throw new UnsupportedOperationException("Signature parameters are not supported"); }
  @Override protected Object engineGetParameter(String name) { throw new UnsupportedOperationException("Signature parameters are not supported"); }
