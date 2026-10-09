@@ -38,8 +38,11 @@ public final class HardwareEcdsaSignatureSpi extends SignatureSpi {
  }
  @Override protected byte[] engineSign() throws SignatureException {
   if (!initialized || session == null) throw new SignatureException("Signature is not initialized for signing");
-  try { return session.sign(); }
-  catch (SigningException e) { throw new SignatureException("Hardware signing failed", e); }
+  try {
+   byte[] result = session.sign();
+   if (result == null || result.length == 0) throw new SignatureException("Hardware backend returned an empty signature");
+   return result;
+  } catch (SigningException e) { throw new SignatureException("Hardware signing failed", e); }
   finally { closeSession(); initialized = false; }
  }
  @Override protected boolean engineVerify(byte[] signature) throws SignatureException {
